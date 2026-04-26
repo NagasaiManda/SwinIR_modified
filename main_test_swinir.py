@@ -75,6 +75,9 @@ def main():
         output = (output * 255.0).round().astype(np.uint8)
         
         # Save in-place (Overwrites the original file)
+        lst = path.split("/")
+        lst[-2] = "images_4x"
+        save_path = "/".join(lst)
         cv2.imwrite(path, output)
         print(f"[{idx + 1}/{len(img_paths)}] Upscaled & Overwritten: {path}")
 
