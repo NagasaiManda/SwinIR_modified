@@ -78,7 +78,7 @@ def main():
         lst = path.split("/")
         lst[-2] = "images_4x"
         save_path = "/".join(lst)
-        cv2.imwrite(path, output)
+        cv2.imwrite(save_path, output)
         print(f"[{idx + 1}/{len(img_paths)}] Upscaled & Overwritten: {path}")
 
 def tiled_inference(img, model, args):
