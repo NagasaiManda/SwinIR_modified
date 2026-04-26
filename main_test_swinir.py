@@ -74,12 +74,26 @@ def main():
         output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0)) # RGB back to BGR
         output = (output * 255.0).round().astype(np.uint8)
         
-        # Save in-place (Overwrites the original file)
-        lst = path.split("/")
-        lst[-2] = "images_4x"
-        save_path = "/".join(lst)
-        cv2.imwrite(save_path, output)
-        print(f"[{idx + 1}/{len(img_paths)}] Upscaled & Overwritten: {path}")
+        parent_dir = os.path.dirname(path)        # e.g. /content/dataset/classA/images
+        grandparent_dir = os.path.dirname(parent_dir) # e.g. /content/dataset/classA
+        file_name = os.path.basename(path)        # e.g. 001.png
+        
+        # Define the new folder name
+        new_folder_name = "images_4x"
+        save_dir = os.path.join(grandparent_dir, new_folder_name)
+        
+        # 2. CRITICAL: Create the directory if it doesn't exist
+        os.makedirs(save_dir, exist_ok=True)
+        
+        save_path = os.path.join(save_dir, file_name)
+
+        # 3. Save and verify
+        success = cv2.imwrite(save_path, output)
+        
+        if success:
+            print(f"[{idx + 1}/{len(img_paths)}] Saved: {save_path}")
+        else:
+            print(f"!! FAILED to save: {save_path}. Check permissions or paths.")
 
 def tiled_inference(img, model, args):
     b, c, h, w = img.size()
